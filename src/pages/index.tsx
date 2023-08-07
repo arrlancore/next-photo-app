@@ -14,14 +14,23 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
+import { useLogin, useRegister } from "@/features/auth/hook";
 
 type FormType = "login" | "register";
 
 const FormRegister = (props: {
-  onSubmit: () => void;
+  onSubmit: (p: { email: string; password: string; name: string }) => void;
   showLogin: () => void;
   loading: boolean;
 }) => {
+  const handleSubmit = () => {
+    const email = (document.getElementById("email") as HTMLInputElement).value;
+    const password = (document.getElementById("password") as HTMLInputElement)
+      .value;
+    const name = (document.getElementById("name") as HTMLInputElement).value;
+
+    props.onSubmit({ email, password, name });
+  };
   return (
     <Stack spacing={4}>
       <Heading fontSize={"xl"}>Register</Heading>
@@ -53,7 +62,7 @@ const FormRegister = (props: {
         </Stack>
         <Button
           isLoading={props.loading}
-          onClick={alert}
+          onClick={handleSubmit}
           bg={"blue.400"}
           color={"white"}
           _hover={{
@@ -68,10 +77,17 @@ const FormRegister = (props: {
 };
 
 const FormLogin = (props: {
-  onSubmit: () => void;
+  onSubmit: (p: { email: string; password: string }) => void;
   showRegister: () => void;
   loading: boolean;
 }) => {
+  const handleSubmit = () => {
+    const email = (document.getElementById("email") as HTMLInputElement).value;
+    const password = (document.getElementById("password") as HTMLInputElement)
+      .value;
+
+    props.onSubmit({ email, password });
+  };
   return (
     <Stack spacing={4}>
       <Heading fontSize={"xl"}>Login</Heading>
@@ -99,7 +115,7 @@ const FormLogin = (props: {
         </Stack>
         <Button
           isLoading={props.loading}
-          colorScheme="blackAlpha"
+          onClick={handleSubmit}
           bg={"blue.400"}
           color={"white"}
           _hover={{
@@ -116,15 +132,16 @@ const FormLogin = (props: {
 export default function Home() {
   const [formType, setFormType] = React.useState<FormType>("login");
 
-  const onLogin = () => {};
+  const { isLoading: ilLogin, mutate: mLogin } = useLogin();
+  const { isLoading: ilRegister, mutate: mRegister } = useRegister();
 
   const renderForm = (kind: FormType) => {
     switch (kind) {
       case "login":
         return (
           <FormLogin
-            onSubmit={onLogin}
-            loading={false}
+            onSubmit={mLogin}
+            loading={ilLogin}
             showRegister={() => setFormType("register")}
           />
         );
@@ -132,8 +149,14 @@ export default function Home() {
       case "register":
         return (
           <FormRegister
-            onSubmit={onLogin}
-            loading={true}
+            onSubmit={(payload) => {
+              mRegister(payload, {
+                onSuccess: () => {
+                  setFormType("login");
+                },
+              });
+            }}
+            loading={ilRegister}
             showLogin={() => setFormType("login")}
           />
         );

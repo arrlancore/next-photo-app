@@ -3,7 +3,7 @@ import joi from "joi";
 export const userSchema = {
   register: joi.object({
     email: joi.string().email().min(3).max(30).required(),
-    name: joi.string().alphanum().min(3).max(30).required(),
+    name: joi.string().min(3).max(30).required(),
     password: joi.string().min(6).max(30).required(),
   }),
 
