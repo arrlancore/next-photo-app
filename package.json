@@ -9,14 +9,28 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/next-js": "^2.1.5",
+    "@chakra-ui/react": "^2.8.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/multer": "^1.4.7",
     "@types/node": "20.4.8",
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
+    "bcryptjs": "^2.4.3",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.13",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.4.2",
+    "multer": "^1.4.5-lts.1",
     "next": "13.4.13",
+    "next-connect": "^0.13.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.1.6"
-  }
+  },
+  "devDependencies": {}
 }
