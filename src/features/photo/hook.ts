@@ -4,17 +4,11 @@ import {
   CommentPhotoResponse,
   GetPhotosRequest,
   GetPhotosResponse,
-  LoginRequest,
-  LoginResponse,
   PhotoResponse,
-  RegisterRequest,
-  RegisterResponse,
   UploadPhotoRequest,
   UploadPhotoResponse,
   commentPhoto,
   getPhotos,
-  login,
-  register,
   uploadPhoto,
 } from "./service";
 import { useToast } from "@chakra-ui/react";

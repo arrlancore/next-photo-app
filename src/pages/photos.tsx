@@ -10,7 +10,6 @@ import {
 import { renderIf } from "@/lib/render";
 import {
   Box,
-  chakra,
   Container,
   Stack,
   Text,
@@ -21,7 +20,6 @@ import {
   Heading,
   SimpleGrid,
   StackDivider,
-  useColorModeValue,
   VisuallyHidden,
   List,
   ListItem,
@@ -99,7 +97,7 @@ export default function Photos() {
       {photos?.data?.map((item) => (
         <Card key={item._id} w={"100%"} my="2">
           <CardHeader>
-            <Flex spacing="2">
+            <Flex gap="2">
               <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
                 <Avatar name={item.createdBy.name} />
                 <Box>

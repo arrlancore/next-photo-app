@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 export { RouteGuard };
 
-function RouteGuard({ children }: { children: React.ReactNode }) {
+function RouteGuard({ children }: { children: JSX.Element }) {
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
 
