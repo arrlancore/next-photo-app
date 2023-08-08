@@ -42,7 +42,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## Using Docker
 
 1. [Install Docker](https://docs.docker.com/get-docker/) on your machine.
-1. Build your container: `docker build -t nextjs-docker .`.
-1. Run your container: `docker run -p 3000:3000 nextjs-docker`.
+1. Build your container: `docker build -t nextjs-docker:v1 . --build-arg JWT_SECRET=YOUR_JWT_SECRET --build-arg MONGODB_URI=YOUR_MONGODB_URI`.
+1. Run your container: `docker run -p 3000:3000 nextjs-docker:v1`.
 
 You can view your images created with `docker images`.
+
+## Docker Pull Command
+`docker pull arrlancore/next-photo`
