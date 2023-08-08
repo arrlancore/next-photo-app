@@ -1,33 +1,27 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  GetPhotosRequest,
+  GetPhotosResponse,
   LoginRequest,
   LoginResponse,
   RegisterRequest,
   RegisterResponse,
+  getPhotos,
   login,
   register,
 } from "./service";
 import { useToast } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 
-export const useLogin = () => {
+export const usePhotos = (options: GetPhotosRequest) => {
   const toast = useToast();
-  const router = useRouter();
-  const { query } = router;
 
-  return useMutation<LoginResponse, Error, LoginRequest>({
-    mutationFn: (payload: { email: string; password: string }) =>
-      login(payload),
+  return useQuery<GetPhotosResponse, Error>({
+    queryKey: ["usePhotos", options],
+    queryFn: () => getPhotos(options),
 
-    onSuccess: (data) => {
-      localStorage.setItem("auth_token", data.token);
-      localStorage.setItem("user_name", data.user.name);
-
-      router.replace(String(query.returnUrl || "/photos"));
-    },
     onError: (err) => {
       toast({
-        title: "Login failed",
+        title: "Error",
         description: err.message,
         status: "error",
         duration: 5000,

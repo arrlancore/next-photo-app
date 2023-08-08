@@ -17,6 +17,8 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 interface Props {
   children: React.ReactNode;
@@ -25,6 +27,18 @@ interface Props {
 export default function AppHeader() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [name, setName] = useState("u");
+  const router = useRouter();
+
+  useEffect(() => {
+    const name = String(localStorage.getItem("user_name")) || "u";
+    setName(name);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    router.replace("/");
+  };
 
   return (
     <>
@@ -44,28 +58,20 @@ export default function AppHeader() {
                   cursor={"pointer"}
                   minW={0}
                 >
-                  <Avatar
-                    size={"sm"}
-                    src={"https://avatars.dicebear.com/api/male/username.svg"}
-                  />
+                  <Avatar size={"sm"} name={name} />
                 </MenuButton>
                 <MenuList alignItems={"center"}>
                   <br />
                   <Center>
-                    <Avatar
-                      size={"2xl"}
-                      src={"https://avatars.dicebear.com/api/male/username.svg"}
-                    />
+                    <Avatar size={"2xl"} name={name} />
                   </Center>
                   <br />
                   <Center>
-                    <p>Username</p>
+                    <p>{name}</p>
                   </Center>
                   <br />
                   <MenuDivider />
-                  <MenuItem>Your Servers</MenuItem>
-                  <MenuItem>Account Settings</MenuItem>
-                  <MenuItem>Logout</MenuItem>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </MenuList>
               </Menu>
             </Stack>
