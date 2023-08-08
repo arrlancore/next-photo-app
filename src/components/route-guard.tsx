@@ -39,6 +39,10 @@ function RouteGuard({ children }: { children: JSX.Element }) {
         query: { returnUrl: router.asPath },
       });
     } else {
+      // redirect if user has been logged in
+      if (router.pathname === "/") {
+        router.replace("/photos");
+      }
       setAuthorized(true);
     }
   }
