@@ -2,7 +2,7 @@ import CommentInput from "@/components/comment-input";
 import AppHeader from "@/components/header";
 import UploadImage from "@/components/upload-image";
 import UploadModal from "@/components/upload-modal";
-import { usePhotos } from "@/features/photo/hook";
+import { usePhotos, useUploadPhoto } from "@/features/photo/hook";
 import {
   Box,
   chakra,
@@ -38,12 +38,18 @@ import {
 import { useState } from "react";
 
 export default function Photos() {
-  const { data: photos } = usePhotos();
+  const pageSize = 20;
+  const [page] = useState(1);
+  const { data: photos } = usePhotos({ page, pageSize });
+  const { mutate: uploadPhoto, isLoading: loadingUploadPhoto } =
+    useUploadPhoto();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [[blobPreview, file], setPreview] = useState<[string, File | null]>([
     "",
     null,
   ]);
+
+  console.log(123, photos);
 
   return (
     <Container maxW={"2xl"} pb="8">
@@ -61,7 +67,18 @@ export default function Photos() {
         urlPreview={blobPreview}
         isOpen={isOpen}
         onClose={onClose}
-        onSubmit={() => {}}
+        isLoading={loadingUploadPhoto}
+        onSubmit={() => {
+          const form = new FormData();
+          form.append("photo", file as Blob);
+
+          uploadPhoto(form, {
+            onSuccess: () => {
+              onClose();
+              setPreview(["", null]);
+            },
+          });
+        }}
       />
       {/* <Stack as={Box}> */}
       {photos?.data.map((item) => (
@@ -77,9 +94,9 @@ export default function Photos() {
             </Flex>
           </CardHeader>
           <Image
-            objectFit="contain"
+            objectFit="cover"
             minH="280px"
-            maxH="420px"
+            h="420px"
             src={item.photo}
             alt="Photo Item"
             background="#eee"

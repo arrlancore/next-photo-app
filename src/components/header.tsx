@@ -19,6 +19,7 @@ import {
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useUserName } from "@/features/photo/hook";
 
 interface Props {
   children: React.ReactNode;
@@ -27,13 +28,8 @@ interface Props {
 export default function AppHeader() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [name, setName] = useState("u");
+  const name = useUserName();
   const router = useRouter();
-
-  useEffect(() => {
-    const name = String(localStorage.getItem("user_name")) || "u";
-    setName(name);
-  }, []);
 
   const handleLogout = () => {
     localStorage.clear();

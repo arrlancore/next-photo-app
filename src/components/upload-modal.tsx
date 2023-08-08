@@ -16,8 +16,10 @@ export default function UploadModal({
   onClose,
   urlPreview,
   onSubmit,
+  isLoading,
 }: {
   isOpen: boolean;
+  isLoading: boolean;
   urlPreview: string;
   onClose: () => void;
   onSubmit: () => void;
@@ -34,7 +36,12 @@ export default function UploadModal({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button
+              colorScheme="blue"
+              isLoading={isLoading}
+              mr={3}
+              onClick={onSubmit}
+            >
               Continue
             </Button>
             <Button variant="ghost">Cancel</Button>

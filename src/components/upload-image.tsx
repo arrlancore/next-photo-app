@@ -5,7 +5,6 @@ export default function UploadImage(props: {
   onSelectImage: (f: File) => void;
 }) {
   const inputRef = useRef<HTMLDivElement>(null);
-  const [blobPreview, setBlobPreview] = useState("");
 
   const handleClick = () => {
     // 👇️ open file input box on click of another element
