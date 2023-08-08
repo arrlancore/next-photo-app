@@ -2,7 +2,12 @@ import CommentInput from "@/components/comment-input";
 import AppHeader from "@/components/header";
 import UploadImage from "@/components/upload-image";
 import UploadModal from "@/components/upload-modal";
-import { usePhotos, useUploadPhoto } from "@/features/photo/hook";
+import {
+  useCommentPhoto,
+  usePhotos,
+  useUploadPhoto,
+} from "@/features/photo/hook";
+import { renderIf } from "@/lib/render";
 import {
   Box,
   chakra,
@@ -33,6 +38,7 @@ import {
   AccordionIcon,
   Divider,
   useDisclosure,
+  Spinner,
 } from "@chakra-ui/react";
 
 import { useState } from "react";
@@ -40,7 +46,8 @@ import { useState } from "react";
 export default function Photos() {
   const pageSize = 20;
   const [page] = useState(1);
-  const { data: photos } = usePhotos({ page, pageSize });
+  const { data: photos, isLoading } = usePhotos({ page, pageSize });
+  const { mutate: commentPhoto } = useCommentPhoto();
   const { mutate: uploadPhoto, isLoading: loadingUploadPhoto } =
     useUploadPhoto();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -48,8 +55,6 @@ export default function Photos() {
     "",
     null,
   ]);
-
-  console.log(123, photos);
 
   return (
     <Container maxW={"2xl"} pb="8">
@@ -80,8 +85,12 @@ export default function Photos() {
           });
         }}
       />
-      {/* <Stack as={Box}> */}
-      {photos?.data.map((item) => (
+      {renderIf(isLoading)(
+        <Flex p="16" alignItems="center" justify="center">
+          <Spinner />
+        </Flex>
+      )}
+      {photos?.data?.map((item) => (
         <Card key={item._id} w={"100%"} my="2">
           <CardHeader>
             <Flex spacing="2">
@@ -121,7 +130,11 @@ export default function Photos() {
                   </AccordionButton>
                 </h2>
                 <AccordionPanel pb={4} px={0}>
-                  <CommentInput />
+                  <CommentInput
+                    onComment={(c: string) => {
+                      commentPhoto({ comment: c, photoId: item._id });
+                    }}
+                  />
                   {item.comments.map((commentObj) => (
                     <Flex
                       flex="1"

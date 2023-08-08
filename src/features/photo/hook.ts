@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  CommentPhotoRequest,
+  CommentPhotoResponse,
   GetPhotosRequest,
   GetPhotosResponse,
   LoginRequest,
@@ -9,6 +11,7 @@ import {
   RegisterResponse,
   UploadPhotoRequest,
   UploadPhotoResponse,
+  commentPhoto,
   getPhotos,
   login,
   register,
@@ -85,6 +88,62 @@ export const useUploadPhoto = () => {
     onError: (err) => {
       toast({
         title: "Upload photo failed",
+        description: err.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    },
+  });
+};
+
+export const useCommentPhoto = () => {
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const username = useUserName();
+
+  return useMutation<CommentPhotoResponse, Error, CommentPhotoRequest>({
+    mutationFn: (payload: CommentPhotoRequest) => commentPhoto(payload),
+    onMutate: async (newComment) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ["photos"] });
+
+      // Snapshot the previous value
+      const previous = queryClient.getQueryData(["photos"]);
+      const photo = (previous as GetPhotosResponse).data.filter(
+        (item) => item._id === newComment.photoId
+      )[0];
+
+      // Optimistically update to the new value
+
+      queryClient.setQueryData(["photos"], (old: any) => {
+        console.log("old", old);
+        old.data = (old.data as PhotoResponse[]).map((item) => {
+          if (item._id === newComment.photoId) {
+            item.comments = [
+              {
+                comment: newComment.comment,
+                commentBy: username,
+                _id: Date.now().toString(),
+              },
+              ...item.comments,
+            ];
+          }
+
+          return item;
+        });
+
+        return old;
+      });
+
+      // Return a context object with the snapshotted value
+      return { previous };
+    },
+
+    onError: (err) => {
+      toast({
+        title: "Commenting to photo failed",
         description: err.message,
         status: "error",
         duration: 5000,
