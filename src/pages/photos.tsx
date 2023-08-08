@@ -90,6 +90,12 @@ export default function Photos() {
           <Spinner />
         </Flex>
       )}
+
+      {renderIf(photos?.data?.length === 0)(
+        <Flex p="16" alignItems="center" justify="center">
+          No photo to show, please upload your photo!
+        </Flex>
+      )}
       {photos?.data?.map((item) => (
         <Card key={item._id} w={"100%"} my="2">
           <CardHeader>

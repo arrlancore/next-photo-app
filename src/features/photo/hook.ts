@@ -56,7 +56,6 @@ export const useUploadPhoto = () => {
 
       // Optimistically update to the new value
       const photoUrlBlob = URL.createObjectURL(newPhoto.get("photo") as Blob);
-      console.log(1, photoUrlBlob);
       const newItem: PhotoResponse = {
         _id: Date.now().toString(),
         photo: photoUrlBlob,
@@ -66,7 +65,6 @@ export const useUploadPhoto = () => {
         comments: [],
       };
       queryClient.setQueryData(["photos"], (old: any) => {
-        console.log("old", old);
         old.count = old.count + 1;
         old.data = [newItem, ...old.data];
 
@@ -111,14 +109,13 @@ export const useCommentPhoto = () => {
 
       // Snapshot the previous value
       const previous = queryClient.getQueryData(["photos"]);
-      const photo = (previous as GetPhotosResponse).data.filter(
-        (item) => item._id === newComment.photoId
-      )[0];
 
+      // Fail first if no comment
+      if (!newComment.comment) {
+        return { previous };
+      }
       // Optimistically update to the new value
-
       queryClient.setQueryData(["photos"], (old: any) => {
-        console.log("old", old);
         old.data = (old.data as PhotoResponse[]).map((item) => {
           if (item._id === newComment.photoId) {
             item.comments = [

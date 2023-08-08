@@ -11,7 +11,6 @@ const storage = multer.diskStorage({
     const userId = auth.getUserId(req.headers.authorization!);
     const fileName =
       userId + "_" + file.originalname.trim().replace(/\s/g, "-");
-    console.log(3, fileName);
     cb(null, fileName);
   },
 });

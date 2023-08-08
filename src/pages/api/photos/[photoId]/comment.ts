@@ -27,7 +27,6 @@ apiRoute.post(async (req: NextApiRequest, res: NextApiResponse) => {
     const payload = { comment, photo: String(photoId), user: userId };
     const validate = photoSchema.photoComment.validate(payload);
     if (validate.error) throw validate.error.details[0].message;
-    console.log(comment, photoId, userId);
 
     const _comment = await photosRepo.comment(payload);
 
