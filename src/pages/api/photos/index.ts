@@ -2,18 +2,9 @@ import { auth, photosRepo } from "@/lib/server";
 import { NextApiResponse, NextApiRequest } from "next";
 import nextConnect from "next-connect";
 import multer from "multer";
+import cloudinary from "@/lib/server/cloudinary";
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./public/uploads");
-  },
-  filename: function (req, file, cb) {
-    const userId = auth.getUserId(req.headers.authorization!);
-    const fileName =
-      userId + "_" + file.originalname.trim().replace(/\s/g, "-");
-    cb(null, fileName);
-  },
-});
+const storage = multer.diskStorage({});
 
 const upload = multer({ storage: storage });
 
@@ -41,10 +32,19 @@ apiRoute.post(
       }
 
       const file = req.files[0];
+
       const userId = auth.getUserId(req.headers.authorization!);
 
+      const options = {
+        use_filename: true,
+        unique_filename: false,
+        overwrite: true,
+      };
+
+      const uploaded = await cloudinary.uploader.upload(file.path, options);
+
       const photo = await photosRepo.post({
-        photo: file.path.replace("public", ""),
+        photo: uploaded.secure_url,
         createdBy: userId,
       });
 
