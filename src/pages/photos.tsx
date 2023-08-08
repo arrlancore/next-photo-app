@@ -135,6 +135,7 @@ export default function Photos() {
                 </h2>
                 <AccordionPanel pb={4} px={0}>
                   <CommentInput
+                    id={item._id}
                     onComment={(c: string) => {
                       commentPhoto({ comment: c, photoId: item._id });
                     }}
