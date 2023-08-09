@@ -15,7 +15,6 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { useLogin, useRegister } from "@/features/auth/hook";
-import { useRedirectLoggedIn } from "@/components/route-guard";
 
 type FormType = "login" | "register";
 
