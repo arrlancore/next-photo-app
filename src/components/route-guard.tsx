@@ -3,6 +3,10 @@ import { useRouter } from "next/router";
 
 export { RouteGuard };
 
+const LOGIN_PATH = "/";
+const PHOTOS_PATH = "/photos";
+const publicPaths = [LOGIN_PATH];
+
 function RouteGuard({ children }: { children: JSX.Element }) {
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
@@ -29,23 +33,33 @@ function RouteGuard({ children }: { children: JSX.Element }) {
 
   function authCheck(url: string) {
     // redirect to login page if accessing a private page and not logged in
-    const publicPaths = ["/"];
     const path = url.split("?")[0];
     const jwt = localStorage.getItem("auth_token");
     if (!jwt && !publicPaths.includes(path)) {
       setAuthorized(false);
       router.push({
-        pathname: "/",
+        pathname: LOGIN_PATH,
         query: { returnUrl: router.asPath },
       });
     } else {
-      // redirect if user has been logged in
-      if (router.pathname === "/") {
-        router.replace("/photos");
-      }
       setAuthorized(true);
     }
   }
 
   return authorized && children;
+}
+
+export function useRedirectUnauthorizedPaths() {
+  const router = useRouter();
+
+  React.useEffect(() => {
+    const jwt = localStorage.getItem("auth_token");
+    const unauthorizedPaths = [LOGIN_PATH];
+
+    console.log(jwt, unauthorizedPaths.includes(router.pathname));
+
+    if (jwt && unauthorizedPaths.includes(location.pathname)) {
+      router.replace(PHOTOS_PATH);
+    }
+  }, []);
 }
